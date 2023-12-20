@@ -1,0 +1,6 @@
+.table-cell {
+    border-radius: 8px;
+    width: fit-content;
+    padding: 4px 12px;
+    background-color: var(--muted-color);
+}
