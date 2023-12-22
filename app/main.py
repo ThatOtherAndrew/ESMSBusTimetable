@@ -176,10 +176,18 @@ async def upload() -> str:
     chunks = (chunk.strip() for chunk in re.split(r'^(?=Time)', raw_csv, flags=re.MULTILINE))
     records = []
     for weekday, chunk in enumerate(chunks):
+        buffer = []
         for row in csv.DictReader(StringIO(chunk)):
             row: dict
+            buffer.append(row)
+            if not all(row[key] for key in ('Time', 'Vehicle', 'From', 'Group', 'Destination')):
+                continue
+
+            row = {key: ' '.join(line[key] for line in buffer).replace('\n', ' ') for key in row.keys()}
+            buffer = []
+            time = re.search(r'\d{4}', row['Time']).group()
             records.append((
-                day.replace(hour=int(row['Time'][:2]), minute=int(row['Time'][-2:])).timestamp(),
+                day.replace(hour=int(time[:2]), minute=int(time[2:])).timestamp(),
                 row['Vehicle'],
                 row['From'],
                 row['Group'],
