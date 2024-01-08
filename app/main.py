@@ -10,6 +10,7 @@ from pathlib import Path
 
 import dateutil.parser
 import quart
+
 # noinspection PyPackageRequirements
 import tabula
 
@@ -165,9 +166,10 @@ async def upload() -> str:
     with csv_path.open('r') as file:
         raw_csv = file.read()
 
+    timestamp_length = 6
     day = datetime.strptime(
         next(filter(
-            lambda string: string.isdigit() and len(string) == 6,
+            lambda string: string.isdigit() and len(string) == timestamp_length,
             pdf.get_filename().split()
         )),
         '%d%m%y'
@@ -175,15 +177,15 @@ async def upload() -> str:
     day -= timedelta(days=day.weekday())
     chunks = filter(None, (chunk.strip() for chunk in re.split(r'^(?=Time)', raw_csv, flags=re.MULTILINE)))
     records = []
-    for weekday, chunk in enumerate(chunks):
+    for chunk in chunks:
         buffer = []
-        for row in csv.DictReader(StringIO(chunk)):
-            row: dict
-            buffer.append(row)
-            if not all(row[key] for key in ('Time', 'Vehicle', 'From', 'Group', 'Destination')):
+        for raw_row_data in csv.DictReader(StringIO(chunk)):
+            raw_row_data: dict  # because PyCharm is silly
+            buffer.append(raw_row_data)
+            if not all(raw_row_data[key] for key in ('Time', 'Vehicle', 'From', 'Group', 'Destination')):
                 continue
 
-            row = {key: ' '.join(line[key] for line in buffer).replace('\n', ' ') for key in row.keys()}
+            row = {key: ' '.join(line[key] for line in buffer).replace('\n', ' ') for key in raw_row_data}
             buffer = []
             time = re.search(r'\d{4}', row['Time']).group()
             records.append((
