@@ -173,7 +173,7 @@ async def upload() -> str:
         '%d%m%y'
     )
     day -= timedelta(days=day.weekday())
-    chunks = (chunk.strip() for chunk in re.split(r'^(?=Time)', raw_csv, flags=re.MULTILINE))
+    chunks = filter(None, (chunk.strip() for chunk in re.split(r'^(?=Time)', raw_csv, flags=re.MULTILINE)))
     records = []
     for weekday, chunk in enumerate(chunks):
         buffer = []
