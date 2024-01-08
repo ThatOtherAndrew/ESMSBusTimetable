@@ -93,11 +93,11 @@ def time_colour(timestamp: int) -> str:
     # now = datetime.fromtimestamp(1703083900)
     delta = bus_time - now
 
-    if delta.days < 0 or delta.seconds <= 60 * 5:
+    if delta.days < 0 or delta.total_seconds() <= 60 * 5:
         return '#950f24'
-    if delta.seconds <= 60 * 15:
+    if delta.total_seconds() <= 60 * 15:
         return '#b7950b'
-    if delta.seconds <= 60 * 120:
+    if delta.total_seconds() <= 60 * 120:
         return '#39556b'
     if bus_time.day == now.day:
         return '#253745'
