@@ -199,26 +199,29 @@ async def upload() -> str:
         day += timedelta(days=1)
 
     with db_session() as connection:
-        try:
-            connection.executemany('''
-                INSERT INTO timetable (
-                    departure_time,
-                    vehicle,
-                    location,
-                    target_group,
-                    destination,
-                    comments
-                ) VALUES (
-                    ?, ?, ?, ?, ?, ?
-                );
-            ''', records)
-        except sqlite3.IntegrityError:
-            response = 'Timetable data already exists in database'
-            print(response)
-            return response
+        failed = 0
+        for record in records:
+            try:
+                connection.execute('''
+                    INSERT INTO timetable (
+                        departure_time,
+                        vehicle,
+                        location,
+                        target_group,
+                        destination,
+                        comments
+                    ) VALUES (
+                        ?, ?, ?, ?, ?, ?
+                    );
+                ''', record)
+            except sqlite3.IntegrityError:
+                failed += 1
 
         connection.commit()
 
-    print('Timetable data added to database')
+    response = f'{len(records)} bus record{"s" if len(records) != 1 else ""} added'
+    if failed:
+        response += f' (⚠️ {failed} invalid records ignored)'
 
-    return 'Timetable data successfully added to database'
+    print(response)
+    return response
