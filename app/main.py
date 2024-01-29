@@ -44,7 +44,7 @@ def setup():
                 target_group TEXT NOT NULL,
                 destination TEXT NOT NULL,
                 comments TEXT,
-                PRIMARY KEY (departure_time, vehicle, location, target_group, destination)
+                PRIMARY KEY (departure_time, vehicle, location, target_group, destination, comments)
             );
         ''')
         connection.commit()
