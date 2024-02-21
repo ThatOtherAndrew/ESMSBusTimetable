@@ -109,7 +109,7 @@ def time_colour(timestamp: int) -> str:
 @app.route('/')
 async def root() -> str:
     with db_session() as connection:
-        timetable = connection.execute('''
+        timetable_data = connection.execute('''
             SELECT * FROM timetable
             WHERE departure_time >= ?
             ORDER BY departure_time ASC;
@@ -117,7 +117,21 @@ async def root() -> str:
             datetime.now().timestamp(),
         )).fetchall()
 
-    return await quart.render_template('index.html', timetable=timetable)
+    return await quart.render_template('index.html', timetable=timetable_data)
+
+
+@app.route('/timetable')
+async def timetable() -> str:
+    with db_session() as connection:
+        timetable_data = connection.execute('''
+            SELECT * FROM timetable
+            WHERE departure_time >= ?
+            ORDER BY departure_time ASC;
+        ''', (
+            datetime.now().timestamp(),
+        )).fetchall()
+
+    return await quart.render_template('timetable.html', timetable=timetable_data)
 
 
 @app.route('/upload', methods=['POST'])

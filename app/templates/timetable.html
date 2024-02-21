@@ -1,0 +1,47 @@
+<section hx-get="/timetable" hx-swap="outerHTML" hx-trigger="every 5s">
+  {% if not timetable %}
+    <p>No timetable data found. This is probably due to an issue with data collection - please let Andrew know!</p>
+
+  {% else %}
+    <table>
+      <tr>
+        <th>Departure Time</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Notes</th>
+        <th>Relative Time</th>
+      </tr>
+
+      {% for bus in timetable %}
+        <tr>
+          <td>
+            <div class="table-cell" style="background-color: #253745">
+              {{ bus['departure_time'] | format_timestamp }}
+            </div>
+          </td>
+          <td>
+            <div class="table-cell" style="background-color: {{ bus['location'] | location_colour }}">
+              {{ bus['location'] }}
+            </div>
+          </td>
+          <td>
+            <div class="table-cell" style="background-color: {{ bus['destination'] | location_colour }}">
+              {{ bus['destination'] }}
+            </div>
+          </td>
+  {#          <td>{{ bus['vehicle'] }}</td>#}
+  {#          <td>{{ bus['group'] }}</td>#}
+          <td style="color: var(--muted-color)">
+            {{ bus['comments'] }}
+          </td>
+          <td>
+            <div class="table-cell" style="background-color: {{ bus['departure_time'] | time_colour }}">
+              {{ bus['departure_time'] | relative_timestamp }}
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  {% endif %}
+</section>
