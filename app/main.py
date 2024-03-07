@@ -66,7 +66,7 @@ def relative_timestamp(timestamp: int) -> str:
         return 'missed'
 
     if bus_time.day > now.day:
-        return 'tomorrow' if bus_time.day - now.day == 1 else f'in {delta.days} days'
+        return 'tomorrow' if bus_time.day - now.day == 1 else f'in {bus_time.day - now.day} days'
 
     hours, seconds = divmod(delta.seconds, 3600)
     minutes = seconds // 60
