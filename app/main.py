@@ -72,8 +72,8 @@ def relative_timestamp(timestamp: int) -> str:
     minutes = seconds // 60
     return (
         'in '
-        f'{hours} hr{"s" if hours > 1 else ""}' if hours else ''
-        f'{minutes} min' if minutes else ''
+        + (f'{hours} hr ' if hours else '')
+        + (f'{minutes} min' if minutes else '')
     )
 
 
