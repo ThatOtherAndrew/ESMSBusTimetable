@@ -18,6 +18,16 @@ app = quart.Quart(__name__)
 data_dir = Path('../data')
 
 
+def sort_bus_records(records: list[tuple]) -> None:
+    for i in range(1, len(records)):
+        key = records[i]
+        j = i - 1
+        while j >= 0 and key[0] < records[j][0]:
+            records[j + 1] = records[j]
+            j -= 1
+        records[j + 1] = key
+
+
 @contextmanager
 def db_session() -> sqlite3.Connection:
     connection = sqlite3.connect(data_dir / 'timetable.db')
@@ -214,6 +224,8 @@ async def upload() -> str:
                 row['Comments']
             ))
         day += timedelta(days=1)
+
+    sort_bus_records(records)
 
     with db_session() as connection:
         failed = 0
