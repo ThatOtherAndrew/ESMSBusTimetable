@@ -20,12 +20,12 @@ data_dir = Path('../data')
 
 def sort_bus_records(records: list[tuple]) -> None:
     for i in range(1, len(records)):
-        key = records[i]
-        j = i - 1
-        while j >= 0 and key[0] < records[j][0]:
-            records[j + 1] = records[j]
+        insert = records[i]
+        j = i
+        while j > 0 and insert[0] < records[j - 1][0]:
+            records[j] = records[j - 1]
             j -= 1
-        records[j + 1] = key
+        records[j] = insert
 
 
 @contextmanager
