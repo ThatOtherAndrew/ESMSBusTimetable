@@ -69,7 +69,6 @@ def format_timestamp(timestamp: int) -> str:
 def relative_timestamp(timestamp: int) -> str:
     bus_time = datetime.fromtimestamp(timestamp)
     now = datetime.now()
-    # now = datetime.fromtimestamp(1703083900)
     delta = bus_time - now
 
     if delta.days < 0:
@@ -104,7 +103,6 @@ def location_colour(string: str) -> str:
 def time_colour(timestamp: int) -> str:
     bus_time = datetime.fromtimestamp(timestamp)
     now = datetime.now()
-    # now = datetime.fromtimestamp(1703083900)
     delta = bus_time - now
 
     if delta.days < 0 or delta.total_seconds() <= 60 * 5:
