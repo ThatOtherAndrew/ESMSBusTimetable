@@ -1,3 +1,4 @@
 python-dateutil==2.8.2
+pytz==2023.3.post1
 quart==0.19.4
 tabula-py[jpype]==2.9.0

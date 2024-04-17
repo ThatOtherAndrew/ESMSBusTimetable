@@ -9,6 +9,7 @@ from io import StringIO
 from pathlib import Path
 
 import dateutil.parser
+import pytz
 import quart
 
 # noinspection PyPackageRequirements
@@ -68,7 +69,7 @@ def format_timestamp(timestamp: int) -> str:
 @app.template_filter()
 def relative_timestamp(timestamp: int) -> str:
     bus_time = datetime.fromtimestamp(timestamp)
-    now = datetime.now()
+    now = datetime.utcnow()
     delta = bus_time - now
 
     if delta.days < 0:
@@ -102,7 +103,7 @@ def location_colour(string: str) -> str:
 @app.template_filter()
 def time_colour(timestamp: int) -> str:
     bus_time = datetime.fromtimestamp(timestamp)
-    now = datetime.now()
+    now = datetime.utcnow()
     delta = bus_time - now
 
     if delta.days < 0 or delta.total_seconds() <= 60 * 5:
@@ -125,7 +126,7 @@ async def root() -> str:
             WHERE departure_time >= ?
             ORDER BY departure_time ASC;
         ''', (
-            datetime.now().timestamp(),
+            datetime.utcnow().timestamp(),
         )).fetchall()
 
     return await quart.render_template('index.html', timetable=timetable_data)
@@ -139,7 +140,7 @@ async def timetable() -> str:
             WHERE departure_time >= ?
             ORDER BY departure_time ASC;
         ''', (
-            datetime.now().timestamp(),
+            datetime.utcnow().timestamp(),
         )).fetchall()
 
     return await quart.render_template('timetable.html', timetable=timetable_data)
@@ -213,8 +214,9 @@ async def upload() -> str:
             row = {key: ' '.join(line[key] for line in buffer).replace('\n', ' ') for key in raw_row_data}
             buffer = []
             time = re.search(r'\d{4}', row['Time']).group()
+            local_time = day.replace(hour=int(time[:2]), minute=int(time[2:]))
             records.append((
-                day.replace(hour=int(time[:2]), minute=int(time[2:])).timestamp(),
+                pytz.timezone('Europe/London').localize(local_time).timestamp(),
                 row['Vehicle'],
                 row['From'],
                 row['Group'],
