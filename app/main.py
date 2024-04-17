@@ -183,7 +183,7 @@ async def upload() -> str:
         input_path=pdf_path,
         output_path=csv_path.as_posix(),
         output_format='csv',
-        pages='all'
+        pages='all',
     )
 
     print('PDF parsed and converted to CSV')
@@ -195,9 +195,9 @@ async def upload() -> str:
     day = datetime.strptime(
         next(filter(
             lambda string: string.isdigit() and len(string) == timestamp_length,
-            pdf.get_filename().split()
+            pdf.get_filename().split(),
         )),
-        '%d%m%y'
+        '%d%m%y',
     )
     day -= timedelta(days=day.weekday())
     chunks = filter(None, (chunk.strip() for chunk in re.split(r'^(?=Time)', raw_csv, flags=re.MULTILINE)))
@@ -219,7 +219,7 @@ async def upload() -> str:
                 row['From'],
                 row['Group'],
                 row['Destination'],
-                row['Comments']
+                row['Comments'],
             ))
         day += timedelta(days=1)
 
