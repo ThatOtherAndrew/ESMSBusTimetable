@@ -63,12 +63,12 @@ def setup():
 
 @app.template_filter()
 def format_timestamp(timestamp: int) -> str:
-    return datetime.fromtimestamp(timestamp).strftime('%a %d %H:%M')
+    return datetime.utcfromtimestamp(timestamp).astimezone(pytz.timezone('Europe/London')).strftime('%a %d %H:%M')
 
 
 @app.template_filter()
 def relative_timestamp(timestamp: int) -> str:
-    bus_time = datetime.fromtimestamp(timestamp)
+    bus_time = datetime.utcfromtimestamp(timestamp)
     now = datetime.utcnow()
     delta = bus_time - now
 
@@ -102,7 +102,7 @@ def location_colour(string: str) -> str:
 
 @app.template_filter()
 def time_colour(timestamp: int) -> str:
-    bus_time = datetime.fromtimestamp(timestamp)
+    bus_time = datetime.utcfromtimestamp(timestamp)
     now = datetime.utcnow()
     delta = bus_time - now
 
