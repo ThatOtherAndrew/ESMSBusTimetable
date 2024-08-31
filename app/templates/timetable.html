@@ -15,7 +15,7 @@
       {% for bus in timetable %}
         <tr>
           <td>
-            <div class="table-cell" style="background-color: #253745">
+            <div class="table-cell" style="background-color: #253745; white-space: nowrap">
               {{ bus['departure_time'] | format_timestamp }}
             </div>
           </td>
@@ -30,10 +30,10 @@
             </div>
           </td>
           <td style="color: var(--muted-color)">
-            {{ bus['comments'] }}
+            {{ (bus['target_group'], bus['comments']) | select | join(', ') }}
           </td>
           <td>
-            <div class="table-cell" style="background-color: {{ bus['departure_time'] | time_colour }}">
+            <div class="table-cell" style="background-color: {{ bus['departure_time'] | time_colour }}; white-space: nowrap">
               {{ bus['departure_time'] | relative_timestamp }}
             </div>
           </td>

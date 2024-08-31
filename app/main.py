@@ -143,6 +143,7 @@ async def timetable() -> str:
             datetime.utcnow().timestamp(),
         )).fetchall()
 
+    print(dict(timetable_data[0]))
     return await quart.render_template('timetable.html', timetable=timetable_data)
 
 
